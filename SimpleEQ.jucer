@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="fZpDaZ" name="SimpleEQ" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
-              cppLanguageStandard="17">
+              cppLanguageStandard="17" pluginFormats="buildStandalone,buildVST3">
   <MAINGROUP id="f7k1ny" name="SimpleEQ">
     <GROUP id="{9C0F18C2-D34E-54E9-AC91-677E1C04E852}" name="Source">
       <FILE id="DDPIL7" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -34,6 +34,7 @@
         <MODULEPATH id="juce_graphics" path="C:/Users/maxwi/Downloads/JUCE-master/modules"/>
         <MODULEPATH id="juce_gui_basics" path="C:/Users/maxwi/Downloads/JUCE-master/modules"/>
         <MODULEPATH id="juce_gui_extra" path="C:/Users/maxwi/Downloads/JUCE-master/modules"/>
+        <MODULEPATH id="juce_dsp" path="C:/Users/maxwi/Downloads/JUCE-master/modules"/>
       </MODULEPATHS>
     </VS2019>
   </EXPORTFORMATS>
@@ -47,6 +48,7 @@
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
