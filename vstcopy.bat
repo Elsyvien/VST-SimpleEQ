@@ -1,0 +1,3 @@
+@echo Kopiere Datei...
+@xcopy /y /s "D:\Projekte\Programmieren, Spiele, 3D\2021\VST Plugin\Plugin\SimpleEQ\Builds\VisualStudio2019\x64\Debug\VST3\SimpleEQ.vst3" "C:\Program Files\Common Files\VST3"
+@echo Erfolgreich Kopiert
