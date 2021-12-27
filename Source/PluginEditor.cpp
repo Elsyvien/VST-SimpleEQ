@@ -69,10 +69,10 @@ void RotarySliderWithLabels::paint(juce::Graphics &g)
 
     auto sliderBounds = getSliderBounds();
 
-    g.setColour(Colours::red);
+    /*g.setColour(Colours::red);
     g.drawRect(getLocalBounds());
     g.setColour(Colours::yellow);
-    g.drawRect(sliderBounds);
+    g.drawRect(sliderBounds);*/ //only meant for debbuging not necessery anymore
 
     getLookAndFeel().drawRotarySlider(g, sliderBounds.getX(), sliderBounds.getY(), sliderBounds.getWidth(), sliderBounds.getHeight(), 
     jmap(getValue(), range.getStart(), range.getEnd(), 0.0, 1.0), startAng, endAng, *this);
