@@ -89,6 +89,10 @@ void RotarySliderWithLabels::paint(juce::Graphics &g)
         Rectangle<float> r;
         auto str = labels[i].label;
         r.setSize(g.getCurrentFont().getStringWidth(str), getTextHeight());
+        r.setCentre(c);
+        r.setY(r.getY() + getTextBoxHeight());
+
+        g.drawFittedText(str, r.toNearestInt(), juce::Justification::centred, 1);
     }
 }
 
@@ -271,8 +275,8 @@ highCutFreqSliderAttachment(audioProcessor.apvts, "HighCut Freq", highCutFreqSli
 lowCutSlopeSliderAttachment(audioProcessor.apvts, "LowCut Slope", lowCutSlopeSlider),
 highCutSlopeSliderAttachment(audioProcessor.apvts, "HighCut Slope", highCutSlopeSlider)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
+    peakFreqSlider.labels.add({ 0.f }, "20Hz");
+    peakFreqSlider.labels.add({ 1.f }, "20kHz");
     
     for (auto* comp : getComps()) {
         addAndMakeVisible(comp);
