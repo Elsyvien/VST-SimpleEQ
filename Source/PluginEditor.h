@@ -58,6 +58,8 @@ juce::Timer
     
     void parameterGestureChanged(int parameterIndex, bool gestureIsStarting) override {};
     
+    void updateChain();
+
     void timerCallback() override;
 
     void paint(juce::Graphics& g) override;
