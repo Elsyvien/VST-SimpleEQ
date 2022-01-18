@@ -65,9 +65,14 @@ juce::Timer
     void paint(juce::Graphics& g) override;
 private:
     SimpleEQAudioProcessor& audioProcessor;
-    juce::Atomic<bool> parametersChanged{true};
+    juce::Atomic<bool> parametersChanged{false};
 
     MonoChain monoChain;
+
+    juce::Image background;
+
+    juce::Rectangle<int> getRenderArea();
+    
 };
 
 //==============================================================================

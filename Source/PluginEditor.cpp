@@ -198,6 +198,8 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
     using namespace juce;
     g.fillAll(Colours::black);
 
+    g.drawImage(background, getLocalBounds().toFloat());
+
     auto responseArea = getLocalBounds();
 
     auto w = responseArea.getWidth();
@@ -259,6 +261,41 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
 
     g.setColour(Colours::white);
     g.strokePath(responseCurve, PathStrokeType(2.f));
+}
+
+void ResponseCurve::resized()
+{
+    using namespace juce;
+    background = Image(Image::PixelFormat::RGB, getWidth, getHeight(), true);
+
+    Graphics g(background);
+
+    Array<float> freqs
+    {
+        20, 30, 40, 50, 100,
+        200, 300, 400, 500, 1000,
+        2000, 3000, 4000, 5000, 10000,
+        20000
+    };
+
+    for(auto f : freqs) 
+    {
+        auto normX = mapFromLog10(f, 20.f, 20000.f);
+
+        g.drawVerticalLine(getWidth * normX, 0.f, getHeight());
+    }
+
+    Array<float> gain
+    {
+        -24, -12, 0, 12, 24
+    };
+
+    for(auto f : gain)
+    {
+        auto y = jmap(gDB, -24.f, 24.f, float(getHeight(), 0.f));
+        g.drawHorizontalLine(y, 0, getWidth());
+    }
+
 }
 
 //==============================================================================
