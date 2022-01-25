@@ -76,6 +76,8 @@ private:
     juce::Rectangle<int> getRenderArea();
 
     juce::Rectangle<int> getAnalysisArea();
+
+    
 };
 
 //==============================================================================
