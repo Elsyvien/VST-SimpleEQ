@@ -144,10 +144,14 @@ juce::String RotarySliderWithLabels::getDisplayString() const
             str << "k";
         str << suffix;
     }
+    
     return str;
+
 }
 
-ResponseCurveComponent::ResponseCurveComponent(SimpleEQAudioProcessor& p) : audioProcessor(p)
+ResponseCurveComponent::ResponseCurveComponent(SimpleEQAudioProcessor& p) : 
+audioProcessor(p),
+leftChannelFifo(&audioProcessor.leftChannelFifo)
 {
     const auto& params = audioProcessor.getParameters();
     for (auto param : params) 
@@ -174,13 +178,31 @@ void ResponseCurveComponent::parameterValueChanged(int parameterIndex, float New
     parametersChanged.set(true);
 }
 
-void ResponseCurveComponent::timerCallback() {
+void ResponseCurveComponent::timerCallback() 
+{
+    juce::AudioBuffer<float> tempIncomingBuffer;
+
+    while (leftChannelFifo->getNumCompleteBuffersAvailable() > 0)
+    {
+        if (leftChannelFifo->getAudioBuffer(tempIncomingBuffer))
+        {
+            auto size = tempIncomingBuffer.getNumSamples();
+
+            juce::FloatVectorOperations::copy(monoBuffer.getWritePointer(0, 0),
+                monoBuffer.getReadPointer(0, size), 
+                monoBuffer.getNumSamples() - size);
+
+            juce::FloatVectorOperations::copy(monoBuffer.getWritePointer(0, monoBuffer.getNumChannels() - size),
+                tempIncomingBuffer.getReadPointer(0, 0), size);
+        }
+    }
+
     if (parametersChanged.compareAndSetBool(false, true))
     {
-        DBG("Parameter Aktualisiert");
-        
+        DBG("Parameters Changed");
+        //update Monochain
         updateChain();
-        
+        //call a repaint
         repaint();
     }
 }
@@ -279,9 +301,9 @@ void ResponseCurveComponent::resized()
    
     Array<float> freqs
     {
-        20, /*30, 40*/, 50, 100,
-        200, /*300, 400*/, 500, 1000,
-        2000, /*3000, 4000*/, 5000, 10000,
+        20, /*30, 40,*/ 50, 100,
+        200, /*300, 400,*/ 500, 1000,
+        2000, /*3000, 4000,*/ 5000, 10000,
         20000
     };
 
@@ -327,7 +349,7 @@ void ResponseCurveComponent::resized()
     const int fontHeight = 10;
     g.setFont(fontHeight);
 
-    for(int = 0; i < freq.size(); ++i)
+    for(int i = 0; i < freqs.size(); ++i)
     {
         auto f = freqs[i];
         auto x = xs[i];
@@ -345,11 +367,11 @@ void ResponseCurveComponent::resized()
             str << "k";
         str << "Hz";
     
-        auto textWidth = g.getCurrentFpnt().getStringWidth(str);
+        auto textWidth = g.getCurrentFont().getStringWidth(str);
 
         Rectangle<int> r;
         r.setSize(textWidth, fontHeight);
-        r.setCenter(x, 0);
+        r.setCentre(x, 0);
         r.setY(1);
 
         g.drawFittedText(str, r, juce::Justification::centred, 1);
@@ -379,7 +401,7 @@ void ResponseCurveComponent::resized()
         str << (gDb -24.f);
 
         r.setX(1);
-        textWidth = g.getCurrentFont.getStringWidth(str);
+        textWidth = g.getCurrentFont().getStringWidth(str);
         r.setSize(textWidth, fontHeight);
         g.setColour(Colours::lightgrey);
         g.drawFittedText(str, r, juce::Justification::centred, 1);
