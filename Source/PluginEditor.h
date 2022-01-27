@@ -234,6 +234,12 @@ private:
     SingleChannelSampleFifo<SimpleEQAudioProcessor::BlockType>* leftChannelFifo;
 
     juce::AudioBuffer<float> monoBuffer;
+
+    FFTDataGenerator<std::vector<float>> leftChannelFFTDataGenerator;
+
+    AnalyzerPathGenerator<juce::Path> pathProducer;
+
+    juce::Path leftChannelFFTPath;
 };
 
 //==============================================================================
