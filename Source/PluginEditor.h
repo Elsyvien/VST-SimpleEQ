@@ -201,36 +201,17 @@ private:
     juce::String suffix;
 };
 
-struct ResponseCurveComponent : juce::Component,
-juce::AudioProcessorParameter::Listener,
-juce::Timer
+struct PathProducer
 {
-    ResponseCurveComponent(SimpleEQAudioProcessor&);
-    ~ResponseCurveComponent();
-    
-    void parameterValueChanged(int parameterIndex, float newValue) override;
-    
-    void parameterGestureChanged(int parameterIndex, bool gestureIsStarting) override {};
-    
-    void updateChain();
-
-    void timerCallback() override;
-
-    void paint(juce::Graphics& g) override;
-    
-    void resized() override;
+    PathProducer(SingleChannelSampleFifo<SimpleEQAudioProcessor::BlockType>& scsf) :
+        leftChannelFifo(&scsf)
+    {
+        leftChannelFFTDataGenerator.changeOrder(FFTOrder::order2048);
+        monoBuffer.setSize(1, leftChannelFFTDataGenerator.getFFTSize());
+    }
+    void process(juce::Rectangle<float> fftBounds, double sampleRate);
+    juce::Path getPath() { return leftChannelFFTPath; }
 private:
-    SimpleEQAudioProcessor& audioProcessor;
-    juce::Atomic<bool> parametersChanged{true};
-
-    MonoChain monoChain;
-    
-    juce::Image background;
-
-    juce::Rectangle<int> getRenderArea();
-
-    juce::Rectangle<int> getAnalysisArea();
-
     SingleChannelSampleFifo<SimpleEQAudioProcessor::BlockType>* leftChannelFifo;
 
     juce::AudioBuffer<float> monoBuffer;
@@ -240,6 +221,56 @@ private:
     AnalyzerPathGenerator<juce::Path> pathProducer;
 
     juce::Path leftChannelFFTPath;
+};
+
+struct ResponseCurveComponent : juce::Component,
+    juce::AudioProcessorParameter::Listener,
+    juce::Timer
+{
+    ResponseCurveComponent(SimpleEQAudioProcessor&);
+    ~ResponseCurveComponent();
+
+    void parameterValueChanged(int parameterIndex, float newValue) override;
+
+    void parameterGestureChanged(int parameterIndex, bool gestureIsStarting) override { }
+
+    void timerCallback() override;
+
+    void paint(juce::Graphics& g) override;
+    void resized() override;
+
+    void toggleAnalysisEnablement(bool enabled)
+    {
+        shouldShowFFTAnalysis = enabled;
+    }
+
+private:
+    SimpleEQAudioProcessor& audioProcessor;
+
+    bool shouldShowFFTAnalysis = true;
+
+    juce::Atomic<bool> parametersChanged{ false };
+
+    MonoChain monoChain;
+
+    void updateResponseCurve();
+
+    juce::Path responseCurve;
+
+    void updateChain();
+
+    void drawBackgroundGrid(juce::Graphics& g);
+    void drawTextLabels(juce::Graphics& g);
+
+    std::vector<float> getFrequencies();
+    std::vector<float> getGains();
+    std::vector<float> getXs(const std::vector<float>& freqs, float left, float width);
+
+    juce::Rectangle<int> getRenderArea();
+
+    juce::Rectangle<int> getAnalysisArea();
+
+    PathProducer leftPathProducer, rightPathProducer;
 };
 
 //==============================================================================
