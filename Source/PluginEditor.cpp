@@ -201,6 +201,7 @@ void PathProducer::process(juce::Rectangle<float> fftBounds, double sampleRate)
             leftChannelFFTDataGenerator.produceFFTDataForRendering(monoBuffer, -48);
         }
     }
+    
     /*if there are fft data buffers to pull
        if we can pull data
            generate path*/
