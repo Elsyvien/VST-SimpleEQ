@@ -491,6 +491,7 @@ juce::Rectangle<int> ResponseCurveComponent::getAnalysisArea()
 }
 
 //==============================================================================
+
 SimpleEQAudioProcessorEditor::SimpleEQAudioProcessorEditor(SimpleEQAudioProcessor& p)
     : AudioProcessorEditor(&p), audioProcessor(p),
 peakFreqSlider(*audioProcessor.apvts.getParameter("Peak Freq"), "Hz"),
