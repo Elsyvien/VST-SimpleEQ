@@ -57,37 +57,60 @@ void LookAndFeel::drawToggleButton (juce::Graphics &g,
 {
     using namespace juce;
 
-    Path powerButton;
+    if(auto* pb = dynamic_cast<PowerButton*>(&toggleButton))
+    {
+        Path powerButton;
+        
+        auto bounds = toggleButton.getLocalBounds();
+        auto size = jmin(bounds.getWidth(), bounds.getHeight()) - 6;
+        auto r = bounds.withSizeKeepingCentre(size, size).toFloat();
+
+        float ang = 30.f;
+
+        size -= 6;
+
+        // use JUCE_LIVE_CONSTANT to adjust these numbers 
+
+        powerButton.addCentredArc(r.getCentreX(),
+                    r.getCentreY(),
+                    size * 0.5, 
+                    size * 0.5, 
+                    0.f, 
+                    degreesToRadians(ang), 
+                    degreesToRadians(360.f - ang),
+                    true);  
+
+        powerButton.startNewSubPath(r.getCentreX(), r.getY());
+        powerButton.lineTo(r.getCentre());
+
+        PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
+
+        auto color = toogleButton.getToggleState() ? Color::dimgrey : Colour(0u, 172u, 1u);
+
+        g.setColour(color);
+        g.strokePath(powerButton, pst);
+        g.drawEllipse(r, 2);
+    } 
+    else if(auto* analyzerButton =  dynamic_cast<AnalyzerButton*>(&toggleButton))
+    {
+        auto color = ! toogleButton.getToggleState() ? Color::dimgrey : Colour(0u, 172u, 1u);
     
-    auto bounds = toggleButton.getLocalBounds();
-    auto size = jmin(bounds.getWidth(), bounds.getHeight()) - 6;
-    auto r = bounds.withSizeKeepingCentre(size, size).toFloat();
+        g.setColour(color);
+    
+        auto insetRect = bounds.reduced(4);
 
-    float ang = 30.f;
+        Path randomPath;
 
-    size -= 6;
+        random r;
 
-    // use JUCE_LIVE_CONSTANT to adjust these numbers 
-
-    powerButton.addCentredArc(r.getCentreX(),
-                r.getCentreY(),
-                size * 0.5, 
-                size * 0.5, 
-                0.f, 
-                degreesToRadians(ang), 
-                degreesToRadians(360.f - ang),
-                true);  
-
-    powerButton.startNewSubPath(r.getCentreX(), r.getY());
-    powerButton.lineTo(r.getCentre());
-
-    PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
-
-    auto color = toogleButton.getToggleState() ? Color::dimgrey : Colour(0u, 172u, 1u);
-
-    g.setColour(color);
-    g.strokePath(powerButton, pst);
-    g.drawEllipse(r, 2);
+        randomPath.startNewSubPath(insectRect.getX(),
+                                   insectRect.getY() + insectRect.getHeight() * r.nextFloat());
+    
+        for(auto x = insectRect.getX() + 1; x <  insectRect.getRight(); x += 2)
+        {
+            randomPath.lineTo()
+        }
+    }
 }
 
 void RotarySliderWithLabels::paint(juce::Graphics &g)
