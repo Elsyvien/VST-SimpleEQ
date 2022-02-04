@@ -3,5 +3,6 @@
 **/.DS_Store
 **/.vscode
 **/.vs
+**/.kdev4
 .kdev4/VST-SimpleEQ.kdev4
 VST-SimpleEQ.kdev4
