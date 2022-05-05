@@ -91,6 +91,7 @@ void LookAndFeel::drawToggleButton (juce::Graphics &g,
         g.strokePath(powerButton, pst);
         g.drawEllipse(r, 2);
     } 
+    
     else if(auto* analyzerButton =  dynamic_cast<AnalyzerButton*>(&toggleButton))
     {
         auto color = ! toogleButton.getToggleState() ? Color::dimgrey : Colour(0u, 172u, 1u);
@@ -108,8 +109,10 @@ void LookAndFeel::drawToggleButton (juce::Graphics &g,
     
         for(auto x = insectRect.getX() + 1; x <  insectRect.getRight(); x += 2)
         {
-            randomPath.lineTo()
+            randomPath.lineTo(x, insectRect.getY() + insectRect.getHeight() * r.nextFloat());
         }
+        
+        g.strokePath(randomPath, PathStrokeType(1.f));
     }
 }
 
